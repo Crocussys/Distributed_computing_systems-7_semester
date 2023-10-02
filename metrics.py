@@ -1,6 +1,7 @@
 from pynput import keyboard
 import psutil
 import threading
+import requests
 
 
 class CounterKeys:
@@ -99,6 +100,61 @@ class IndicatorFrequency:
         :return: None
         """
         if self.__collecting_flag:
-            self.__thread.join()
+            self.__thread = None
+            self.__collecting_flag = False
+
+
+class USD:
+    """
+    Obtaining USD quote
+    """
+    def __init__(self):
+        self.__name = "USD"
+        self.__value = None
+        self.__collecting_flag = False
+        self.__thread = None
+
+    def __collecting(self):
+        """
+        Collection of values
+        :return: None
+        """
+        while self.__collecting_flag:
+            result = requests.get('https://www.cbr-xml-daily.ru/daily.xml').text
+            result = result[result.find('<Valute ID="R01235">') + 20:]
+            result = result[:result.find('</Valute>')]
+            result = result[result.find('<Value>') + 7:result.find('</Value>')].replace(",", ".")
+            self.__value = float(result)
+
+    def start_collect(self):
+        """
+        Start collecting metrics
+        :return: None
+        """
+        if self.__collecting_flag is False:
+            self.__collecting_flag = True
+            self.__thread = threading.Thread(target=self.__collecting, daemon=True)
+            self.__thread.start()
+
+    def get_current_state(self):
+        """
+        Get a name and value
+        :return: name, value
+        """
+        return self.__name, self.__value
+
+    def cleanup(self):
+        """
+        Reset to default value
+        :return: None
+        """
+        self.__value = None
+
+    def stop_collect(self):
+        """
+        Stop collecting metrics
+        :return: None
+        """
+        if self.__collecting_flag:
             self.__thread = None
             self.__collecting_flag = False

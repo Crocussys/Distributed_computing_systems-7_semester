@@ -39,9 +39,10 @@ def stop_collect(objs):
     :return: None
     """
     for obj in objs:
-        obj.stop_collect()
-        collecting_metrics.remove(obj)
-        print(f"Stopped collecting {obj.get_current_state()[0]}")
+        if collecting_metrics.count(obj) > 0:
+            obj.stop_collect()
+            collecting_metrics.remove(obj)
+            print(f"Stopped collecting {obj.get_current_state()[0]}")
 
 
 def cleanup(objs):
@@ -102,7 +103,7 @@ def menu():
 
 
 if __name__ == '__main__':
-    _metric_classes = [CounterKeys, IndicatorFrequency]  # Here, list the classes that control the metrics
+    _metric_classes = [CounterKeys, IndicatorFrequency, USD]  # Here, list the classes that control the metrics
     collecting_metrics = list()  # Metrics that collect data at the moment
     metric_objects = dict()  # Class instances and their names
     for _class in _metric_classes:
@@ -113,7 +114,7 @@ if __name__ == '__main__':
         metric_objects.update({_name: _obj})
     # Threads
     t_console = threading.Thread(target=menu, daemon=True)
-    t_save = threading.Thread(target=save_thread, args=(5,), daemon=True)
+    t_save = threading.Thread(target=save_thread, daemon=True)
     t_console.start()
     t_save.start()
     t_console.join()
