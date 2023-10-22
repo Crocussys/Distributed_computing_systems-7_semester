@@ -34,3 +34,10 @@ options:<br>
 `start` Начать сбор метрик<br>
 `stop` Прекратить сбор метрик<br>
 `exit` Выйти из программы<br>
+Пример использования:
+
+![example.png](https://github.com/Crocussys/Distributed_computing_systems-7_semester/blob/homework/imgs/example.png)
+
+Вывод:
+
+![out_example.png](https://github.com/Crocussys/Distributed_computing_systems-7_semester/blob/homework/imgs/out_example.png)
