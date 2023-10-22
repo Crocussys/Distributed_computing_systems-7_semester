@@ -1,10 +1,33 @@
 from pynput import keyboard
+from abc import ABC, abstractmethod
 import psutil
 import threading
 import requests
 
 
-class CounterKeys:
+class Metric(ABC):
+    @abstractmethod
+    def __str__(self):
+        pass
+
+    @abstractmethod
+    def start_collect(self):
+        pass
+
+    @abstractmethod
+    def get_current_state(self):
+        pass
+
+    @abstractmethod
+    def cleanup(self):
+        pass
+
+    @abstractmethod
+    def stop_collect(self):
+        pass
+
+
+class CounterKeys(Metric):
     """
     Keystroke counter
     """
@@ -12,6 +35,9 @@ class CounterKeys:
         self.__name = "CounterKeys"
         self.__value = 0
         self.__listener = keyboard.Listener(on_press=self.__incrementation, on_release=None, suppress=False)
+
+    def __str__(self):
+        return "Keystroke counter"
 
     def __incrementation(self, _):
         """
@@ -52,7 +78,7 @@ class CounterKeys:
             self.__listener.stop()
 
 
-class IndicatorFrequency:
+class IndicatorFrequency(Metric):
     """
     Processor frequency indicator
     """
@@ -61,6 +87,9 @@ class IndicatorFrequency:
         self.__value = 0
         self.__collecting_flag = False
         self.__thread = None
+
+    def __str__(self):
+        return "Processor frequency indicator"
 
     def __collecting(self):
         """
@@ -104,7 +133,7 @@ class IndicatorFrequency:
             self.__collecting_flag = False
 
 
-class USD:
+class USD(Metric):
     """
     Obtaining USD quote
     """
@@ -113,6 +142,9 @@ class USD:
         self.__value = None
         self.__collecting_flag = False
         self.__thread = None
+
+    def __str__(self):
+        return "Obtaining USD quote"
 
     def __collecting(self):
         """
