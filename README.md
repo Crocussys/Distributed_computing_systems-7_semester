@@ -14,18 +14,18 @@
 1. `.\venv\Scripts\activate`<br>
 2. `python main.py`
 # Параметры командной строки
-usage: `main.py [-h] [-m] [-l METRICS [METRICS ...]] [-p OUT_PATH] [-f OUT_FILE_NAME] [-t TIMER]`<br>
+usage: `main.py [-h] [-m] [-l METRICS [METRICS ...]] [-p OUT_PATH] [-f OUT_FILE_NAME] [-t TIMER]`<br><br>
 options:<br>
-  `-h`, `--help`            вывести это справочное сообщение и выйти<br>
-  `-m`, `--metrics_help`    Показать информацию о доступных метриках и выйти<br>
+  `-h`, `--help`            вывести это справочное сообщение и выйти<br><br>
+  `-m`, `--metrics_help`    Показать информацию о доступных метриках и выйти<br><br>
   `-l METRICS [METRICS ...]`, `--metrics METRICS [METRICS ...]`<br>
-                            Метрики, которые необходимо собирать. Если не указано, то будут собираться все доступные метрики.<br>
+                            Метрики, которые необходимо собирать. Если не указано, то будут собираться все доступные метрики.<br><br>
   `-p OUT_PATH`, `--out_path OUT_PATH`<br>
-                        Путь до выходного файла<br>
+                        Путь до выходного файла<br><br>
   `-f OUT_FILE_NAME`, `--out_file_name OUT_FILE_NAME`<br>
-                        Имя выходного файла<br>
+                        Имя выходного файла<br><br>
   `-t TIMER`, `--timer TIMER`<br>
-                        Сколько секунд надо ждать между сборками?<br>
+                        Сколько секунд надо ждать между сборками?
 # Доступные метрики
 1. CounterKeys: Счетчик нажатий клавиш
 2. IndicatorFrequency: Индикатор частоты процессора

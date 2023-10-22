@@ -32,7 +32,6 @@ class CounterKeys(Metric):
     Keystroke counter
     """
     def __init__(self):
-        self.__name = "CounterKeys"
         self.__value = 0
         self.__listener = keyboard.Listener(on_press=self.__incrementation, on_release=None, suppress=False)
 
@@ -60,7 +59,7 @@ class CounterKeys(Metric):
         Get a name and value
         :return: name, value
         """
-        return self.__name, self.__value
+        return "CounterKeys", self.__value
 
     def cleanup(self):
         """
@@ -83,7 +82,6 @@ class IndicatorFrequency(Metric):
     Processor frequency indicator
     """
     def __init__(self):
-        self.__name = "IndicatorFrequency"
         self.__value = 0
         self.__collecting_flag = False
         self.__thread = None
@@ -114,7 +112,7 @@ class IndicatorFrequency(Metric):
         Get a name and value
         :return: name, value
         """
-        return self.__name, self.__value
+        return "IndicatorFrequency", self.__value
 
     def cleanup(self):
         """
@@ -129,8 +127,9 @@ class IndicatorFrequency(Metric):
         :return: None
         """
         if self.__collecting_flag:
-            self.__thread = None
             self.__collecting_flag = False
+            self.__thread.join()
+            self.__thread = None
 
 
 class USD(Metric):
@@ -138,7 +137,6 @@ class USD(Metric):
     Obtaining USD quote
     """
     def __init__(self):
-        self.__name = "USD"
         self.__value = None
         self.__collecting_flag = False
         self.__thread = None
@@ -152,11 +150,15 @@ class USD(Metric):
         :return: None
         """
         while self.__collecting_flag:
-            result = requests.get('https://www.cbr-xml-daily.ru/daily.xml').text
-            result = result[result.find('<Valute ID="R01235">') + 20:]
-            result = result[:result.find('</Valute>')]
-            result = result[result.find('<Value>') + 7:result.find('</Value>')].replace(",", ".")
-            self.__value = float(result)
+            result = requests.get('https://www.cbr-xml-daily.ru/daily.xml')
+            if result.status_code == 200:
+                result = result.text
+                result = result[result.find('<Valute ID="R01235">') + 20:]
+                result = result[:result.find('</Valute>')]
+                result = result[result.find('<Value>') + 7:result.find('</Value>')].replace(",", ".")
+                self.__value = float(result)
+            else:
+                self.__value = None
 
     def start_collect(self):
         """
@@ -173,7 +175,7 @@ class USD(Metric):
         Get a name and value
         :return: name, value
         """
-        return self.__name, self.__value
+        return "USD", self.__value
 
     def cleanup(self):
         """
@@ -188,5 +190,6 @@ class USD(Metric):
         :return: None
         """
         if self.__collecting_flag:
-            self.__thread = None
             self.__collecting_flag = False
+            self.__thread.join()
+            self.__thread = None
