@@ -87,28 +87,9 @@ def menu():
         inp = input(">")
 
 
-def check_file():
-    """
-    Checking the availability of a file and creating it
-    :return: None
-    """
-    if args.out_path[-1] != '\\' and args.out_path[-1] != '/':
-        args.out_path += '\\'
-    try:
-        file = open(f"{args.out_path}{args.out_file_name}", 'r')
-        file.close()
-    except OSError:
-        try:
-            file = open(f"{args.out_path}{args.out_file_name}", 'w')
-            file.close()
-        except OSError:
-            print("Unable to find or create a file!")
-            raise
-
-
 if __name__ == '__main__':
     args = usage()
-    _metric_classes = [CounterKeys, IndicatorFrequency, USD]  # Here, list the classes that control the metrics
+    _metric_classes = [CounterKeys, RAM, USD]  # Here, list the classes that control the metrics
     metric_objects = dict()  # Class instances and their names
     for _class in _metric_classes:
         _obj = _class()
@@ -129,7 +110,6 @@ if __name__ == '__main__':
                 print(f"Metric {metric_inp} was not found!")
                 continue
             collecting_metrics.append(_obj)
-    check_file()
     # Threads
     t_console = threading.Thread(target=menu, daemon=True)
     t_save = threading.Thread(target=save_thread, args=(args.timer,), daemon=True)
